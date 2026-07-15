@@ -33,7 +33,6 @@ interface JobAcceptance {
 export default function CustomerDashboard() {
   const router = useRouter();
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [drivers, setDrivers] = useState<Map<string, Driver>>(new Map());
   const [acceptances, setAcceptances] = useState<JobAcceptance[]>([]);
   const [userId, setUserId] = useState('');
   const [loading, setLoading] = useState(true);
