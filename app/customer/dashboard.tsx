@@ -290,7 +290,7 @@ export default function CustomerDashboard() {
                     Drivers interested ({taskAcceptances.length})
                   </h3>
                   {taskAcceptances.map((acceptance) => {
-                    const driver = acceptance.drivers || acceptance.driver;
+                    const driver = acceptance.driver;
                     return (
                       <div key={acceptance.id} style={{
                         background: '#0a0a0a',
