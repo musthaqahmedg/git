@@ -38,8 +38,7 @@ export function verifyPaymentSignature(
 }
 
 export async function capturePayment(
-  paymentId: string,
-  amount: number
+  paymentId: string
 ) {
   try {
     const payment = await razorpay.payments.fetch(paymentId);
