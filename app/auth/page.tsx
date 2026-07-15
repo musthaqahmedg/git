@@ -1,66 +1,24 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
+import { SERVICES } from '@/lib/config';
 
 export default function AuthPage() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const userType = searchParams.get('type') || 'driver';
+  const userType = searchParams.get('type') || 'provider';
+  const selectedService = searchParams.get('service') || 'driver';
 
-  const [step, setStep] = useState<'login-method' | 'phone-otp' | 'email' | 'signup'>('login-method');
-  const [authMethod, setAuthMethod] = useState<'phone' | 'email'>('phone');
-  const [phone, setPhone] = useState('');
-  const [otp, setOtp] = useState('');
+  const [step, setStep] = useState<'service-select' | 'email' | 'signup'>('service-select');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
-  const [vehicleType, setVehicleType] = useState('');
-  const [vehicleNumber, setVehicleNumber] = useState('');
-  const [ratePerKm, setRatePerKm] = useState('');
+  const [serviceType, setServiceType] = useState(selectedService);
+  const [serviceDetails, setServiceDetails] = useState<Record<string, string>>({});
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-
-  const handlePhoneSignUp = async () => {
-    if (!phone || phone.length < 10) {
-      setError('Enter valid phone number');
-      return;
-    }
-    setLoading(true);
-    try {
-      const { error } = await supabase.auth.signInWithOtp({ phone });
-      if (error) throw error;
-      setStep('phone-otp');
-      setError('');
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handlePhoneOtpVerify = async () => {
-    if (!otp || otp.length < 6) {
-      setError('Enter valid OTP');
-      return;
-    }
-    setLoading(true);
-    try {
-      const { error } = await supabase.auth.verifyOtp({
-        phone,
-        token: otp,
-        type: 'sms',
-      });
-      if (error) throw error;
-      setStep('signup');
-      setError('');
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleEmailSignUp = async () => {
     if (!email || !password) {
@@ -94,48 +52,35 @@ export default function AuthPage() {
       const user = await supabase.auth.getUser();
       if (!user.data.user) throw new Error('No user');
 
-      // Create user profile
-      const { error: userError } = await supabase
+      const { data: userData, error: userError } = await supabase
         .from('users')
         .insert({
           auth_id: user.data.user.id,
           user_type: userType,
           name,
-          phone: phone || email,
-          email: email || null,
-        });
+          phone: email,
+          email: email,
+          service_type: userType === 'provider' ? serviceType : null,
+          location: 'palakkad',
+        })
+        .select()
+        .single();
 
       if (userError) throw userError;
 
-      // If driver, create driver profile
-      if (userType === 'driver') {
-        if (!vehicleType || !vehicleNumber || !ratePerKm) {
-          setError('Vehicle details required');
-          setLoading(false);
-          return;
-        }
-
-        const { data: userData, error: getUserError } = await supabase
-          .from('users')
-          .select('id')
-          .eq('auth_id', user.data.user.id)
-          .single();
-
-        if (getUserError) throw getUserError;
-
-        const { error: driverError } = await supabase
-          .from('drivers')
+      if (userType === 'provider') {
+        const { error: providerError } = await supabase
+          .from('service_providers')
           .insert({
             user_id: userData.id,
-            vehicle_type: vehicleType,
-            vehicle_number: vehicleNumber,
-            rate_per_km: parseFloat(ratePerKm),
+            service_type: serviceType,
+            service_details: serviceDetails,
           });
 
-        if (driverError) throw driverError;
+        if (providerError) throw providerError;
       }
 
-      router.push(userType === 'driver' ? '/driver/dashboard' : '/customer/dashboard');
+      router.push(userType === 'provider' ? '/provider/dashboard' : '/customer/dashboard');
     } catch (err: any) {
       setError(err.message);
     } finally {
@@ -144,96 +89,49 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="container">
+    <div style={{
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '20px'
+    }}>
       <div style={{
         maxWidth: '400px',
-        margin: '60px auto',
+        width: '100%',
         background: '#1a1a1a',
         padding: '40px',
-        borderRadius: '8px',
-        border: '1px solid #333'
+        borderRadius: '12px',
+        border: '1px solid #333',
+        boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
       }}>
-        <h1 style={{ marginBottom: '8px', fontSize: '24px' }}>
-          {userType === 'driver' ? '🚗 Driver Login' : '📍 Customer Login'}
+        <h1 style={{ marginBottom: '8px', fontSize: '24px', color: '#fff' }}>
+          🎯 Get It Done
         </h1>
         <p style={{ color: '#aaa', marginBottom: '30px', fontSize: '14px' }}>
-          {userType === 'driver' ? 'Find jobs near you' : 'Post your ride request'}
+          {userType === 'provider' ? 'Find jobs in your field' : 'Find service providers'}
         </p>
 
-        {error && <div className="error" style={{ marginBottom: '20px', padding: '10px', background: '#4a2020', borderRadius: '4px' }}>{error}</div>}
+        {error && <div className="error" style={{ marginBottom: '20px', padding: '10px', background: '#4a2020', borderRadius: '4px', fontSize: '13px' }}>{error}</div>}
 
-        {step === 'login-method' && (
+        {step === 'service-select' && userType === 'provider' && (
           <>
-            <div style={{ display: 'flex', gap: '10px', marginBottom: '20px' }}>
-              <button
-                onClick={() => { setAuthMethod('phone'); setStep('phone-otp'); }}
-                style={{
-                  flex: 1,
-                  background: authMethod === 'phone' ? '#2563eb' : '#333',
-                  color: '#fff'
-                }}
-              >
-                Phone OTP
-              </button>
-              <button
-                onClick={() => { setAuthMethod('email'); setStep('email'); }}
-                style={{
-                  flex: 1,
-                  background: authMethod === 'email' ? '#2563eb' : '#333',
-                  color: '#fff'
-                }}
-              >
-                Email
-              </button>
-            </div>
-          </>
-        )}
-
-        {step === 'phone-otp' && (
-          <>
-            <div className="form-group">
-              <label>Phone Number</label>
-              <input
-                type="tel"
-                placeholder="+91 98765 43210"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-              />
-            </div>
+            <label style={{ display: 'block', marginBottom: '12px', fontWeight: '500', color: '#fff' }}>Select Your Service</label>
+            <select 
+              value={serviceType} 
+              onChange={(e) => setServiceType(e.target.value)}
+              style={{ width: '100%', marginBottom: '20px' }}
+            >
+              {SERVICES.map((s) => (
+                <option key={s.id} value={s.id}>{s.name}</option>
+              ))}
+            </select>
             <button
-              onClick={handlePhoneSignUp}
-              disabled={loading}
+              onClick={() => setStep('email')}
               style={{ width: '100%' }}
             >
-              {loading ? 'Sending...' : 'Send OTP'}
-            </button>
-            <button
-              onClick={() => setStep('login-method')}
-              style={{ width: '100%', marginTop: '10px', background: '#333' }}
-            >
-              Back
-            </button>
-          </>
-        )}
-
-        {step === 'phone-otp' && phone && (
-          <>
-            <div className="form-group" style={{ marginTop: '20px' }}>
-              <label>OTP</label>
-              <input
-                type="text"
-                placeholder="Enter 6-digit OTP"
-                value={otp}
-                onChange={(e) => setOtp(e.target.value.slice(0, 6))}
-                maxLength={6}
-              />
-            </div>
-            <button
-              onClick={handlePhoneOtpVerify}
-              disabled={loading}
-              style={{ width: '100%' }}
-            >
-              {loading ? 'Verifying...' : 'Verify OTP'}
+              Continue
             </button>
           </>
         )}
@@ -250,10 +148,10 @@ export default function AuthPage() {
               />
             </div>
             <div className="form-group">
-              <label>Password</label>
+              <label>Password (min 6 characters)</label>
               <input
                 type="password"
-                placeholder="Min 6 characters"
+                placeholder="••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
@@ -266,7 +164,7 @@ export default function AuthPage() {
               {loading ? 'Signing up...' : 'Sign Up'}
             </button>
             <button
-              onClick={() => setStep('login-method')}
+              onClick={() => setStep(userType === 'provider' ? 'service-select' : 'email')}
               style={{ width: '100%', marginTop: '10px', background: '#333' }}
             >
               Back
@@ -286,36 +184,25 @@ export default function AuthPage() {
               />
             </div>
 
-            {userType === 'driver' && (
+            {userType === 'provider' && (
               <>
                 <div className="form-group">
-                  <label>Vehicle Type</label>
-                  <select value={vehicleType} onChange={(e) => setVehicleType(e.target.value)}>
-                    <option value="">Select vehicle</option>
-                    <option value="bike">Bike</option>
-                    <option value="auto">Auto</option>
-                    <option value="car">Car</option>
-                    <option value="cab">Cab</option>
-                  </select>
-                </div>
-
-                <div className="form-group">
-                  <label>Vehicle Number</label>
+                  <label>Hourly Rate (₹)</label>
                   <input
-                    type="text"
-                    placeholder="KL01AB1234"
-                    value={vehicleNumber}
-                    onChange={(e) => setVehicleNumber(e.target.value)}
+                    type="number"
+                    placeholder="e.g., 300"
+                    value={serviceDetails.rate || ''}
+                    onChange={(e) => setServiceDetails({ ...serviceDetails, rate: e.target.value })}
                   />
                 </div>
 
                 <div className="form-group">
-                  <label>Rate per km (₹)</label>
+                  <label>Years of Experience</label>
                   <input
                     type="number"
-                    placeholder="15"
-                    value={ratePerKm}
-                    onChange={(e) => setRatePerKm(e.target.value)}
+                    placeholder="e.g., 5"
+                    value={serviceDetails.experience || ''}
+                    onChange={(e) => setServiceDetails({ ...serviceDetails, experience: e.target.value })}
                   />
                 </div>
               </>
