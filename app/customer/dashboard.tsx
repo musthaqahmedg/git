@@ -96,7 +96,11 @@ export default function CustomerDashboard() {
 
         if (acceptancesError) throw acceptancesError;
 
-        setAcceptances(acceptancesData || []);
+        setAcceptances(acceptancesData?.map((item: any) => ({
+  id: item.id,
+  task_id: item.task_id,
+  driver_id: item.driver_id,
+})) || []);
 
       } catch (err: any) {
         setError(err.message);
