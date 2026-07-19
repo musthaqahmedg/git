@@ -1,11 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase';
 import { SERVICES } from '@/lib/config';
 
-export default function AuthPage() {
+function AuthPageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const userType = searchParams.get('type') || 'provider';
@@ -219,5 +219,13 @@ export default function AuthPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function AuthPage() {
+  return (
+    <Suspense fallback={<div style={{ textAlign: 'center', padding: '40px' }}>Loading...</div>}>
+      <AuthPageContent />
+    </Suspense>
   );
 }
