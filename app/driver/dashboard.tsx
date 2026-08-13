@@ -36,14 +36,14 @@ export default function DriverDashboard() {
     const loadDashboard = async () => {
       try {
         // Check auth
-        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        const { data: { user }, error: authError } = await supabase!!!.auth.getUser();
         if (authError || !user) {
           router.push('/auth?type=driver');
           return;
         }
 
         // Get driver profile
-        const { data: userData, error: userError } = await supabase
+        const { data: userData, error: userError } = await supabase!!
           .from('users')
           .select('id')
           .eq('auth_id', user.id)
@@ -51,7 +51,7 @@ export default function DriverDashboard() {
 
         if (userError) throw userError;
 
-        const { data: driverData, error: driverError } = await supabase
+        const { data: driverData, error: driverError } = await supabase!!
           .from('drivers')
           .select('*')
           .eq('user_id', userData.id)
@@ -61,7 +61,7 @@ export default function DriverDashboard() {
         setDriver(driverData);
 
         // Get open tasks
-        const { data: tasksData, error: tasksError } = await supabase
+        const { data: tasksData, error: tasksError } = await supabase!!
           .from('tasks')
           .select('*')
           .eq('status', 'open')
@@ -72,7 +72,7 @@ export default function DriverDashboard() {
         setTasks(tasksData || []);
 
         // Get accepted jobs by this driver
-        const { data: acceptedData, error: acceptedError } = await supabase
+        const { data: acceptedData, error: acceptedError } = await supabase!!
           .from('job_acceptances')
           .select('task_id')
           .eq('driver_id', driverData.id);
@@ -90,7 +90,7 @@ export default function DriverDashboard() {
     loadDashboard();
 
     // Subscribe to new tasks
-    const subscription = supabase
+    const subscription = supabase!
       .channel('tasks')
       .on(
         'postgres_changes',
@@ -110,7 +110,7 @@ export default function DriverDashboard() {
     if (!driver) return;
 
     try {
-      const { error } = await supabase
+      const { error } = await supabase!!
         .from('job_acceptances')
         .insert({
           task_id: taskId,
@@ -125,7 +125,7 @@ export default function DriverDashboard() {
   };
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
+    await supabase!!!.auth.signOut();
     router.push('/');
   };
 

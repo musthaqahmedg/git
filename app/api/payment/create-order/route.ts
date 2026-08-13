@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
 
     // Save order to database
     const supabase = supabaseServer();
-    const { error } = await supabase
+    const { error } = await supabase!!
       .from('payments')
       .insert({
         job_acceptance_id: jobAcceptanceId,

@@ -51,14 +51,14 @@ export default function CustomerDashboard() {
     const loadDashboard = async () => {
       try {
         // Check auth
-        const { data: { user }, error: authError } = await supabase.auth.getUser();
+        const { data: { user }, error: authError } = await supabase!!!.auth.getUser();
         if (authError || !user) {
           router.push('/auth?type=customer');
           return;
         }
 
         // Get user ID
-        const { data: userData, error: userError } = await supabase
+        const { data: userData, error: userError } = await supabase!!
           .from('users')
           .select('id')
           .eq('auth_id', user.id)
@@ -68,7 +68,7 @@ export default function CustomerDashboard() {
         setUserId(userData.id);
 
         // Get customer's tasks
-        const { data: tasksData, error: tasksError } = await supabase
+        const { data: tasksData, error: tasksError } = await supabase!!
           .from('tasks')
           .select('*')
           .eq('customer_id', userData.id)
@@ -78,7 +78,7 @@ export default function CustomerDashboard() {
         setTasks(tasksData || []);
 
         // Get job acceptances
-        const { data: acceptancesData, error: acceptancesError } = await supabase
+        const { data: acceptancesData, error: acceptancesError } = await supabase!!
           .from('job_acceptances')
           .select(`
             id,
@@ -118,7 +118,7 @@ export default function CustomerDashboard() {
 
     setPosting(true);
     try {
-      const { error } = await supabase
+      const { error } = await supabase!!
         .from('tasks')
         .insert({
           customer_id: userId,
@@ -142,7 +142,7 @@ export default function CustomerDashboard() {
       setError('');
 
       // Reload tasks
-      const { data: tasksData } = await supabase
+      const { data: tasksData } = await supabase!!
         .from('tasks')
         .select('*')
         .eq('customer_id', userId)
@@ -157,7 +157,7 @@ export default function CustomerDashboard() {
   };
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
+    await supabase!!!.auth.signOut();
     router.push('/');
   };
 

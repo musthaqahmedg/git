@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
     const supabase = supabaseServer();
 
     // Update payment record
-    const { error: updateError } = await supabase
+    const { error: updateError } = await supabase!!
       .from('payments')
       .update({
         razorpay_payment_id: paymentId,
@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
     if (updateError) throw updateError;
 
     // Update job acceptance status
-    const { error: jobError } = await supabase
+    const { error: jobError } = await supabase!!
       .from('job_acceptances')
       .update({
         status: 'completed',
@@ -55,14 +55,14 @@ export async function POST(req: NextRequest) {
     if (jobError) throw jobError;
 
     // Update task status
-    const { data: job } = await supabase
+    const { data: job } = await supabase!!
       .from('job_acceptances')
       .select('task_id')
       .eq('id', jobAcceptanceId)
       .single();
 
     if (job) {
-      await supabase
+      await supabase!!
         .from('tasks')
         .update({ status: 'completed' })
         .eq('id', job.task_id);

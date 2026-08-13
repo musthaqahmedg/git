@@ -1,14 +1,14 @@
 import { supabase } from './supabase';
 
 export async function signUpWithPhone(phone: string) {
-  const { data, error } = await supabase.auth.signInWithOtp({
+  const { data, error } = await supabase!.auth.signInWithOtp({
     phone,
   });
   return { data, error };
 }
 
 export async function verifyPhoneOtp(phone: string, token: string) {
-  const { data, error } = await supabase.auth.verifyOtp({
+  const { data, error } = await supabase!.auth.verifyOtp({
     phone,
     token,
     type: 'sms',
@@ -17,7 +17,7 @@ export async function verifyPhoneOtp(phone: string, token: string) {
 }
 
 export async function signUpWithEmail(email: string, password: string) {
-  const { data, error } = await supabase.auth.signUp({
+  const { data, error } = await supabase!.auth.signUp({
     email,
     password,
   });
@@ -25,7 +25,7 @@ export async function signUpWithEmail(email: string, password: string) {
 }
 
 export async function signInWithEmail(email: string, password: string) {
-  const { data, error } = await supabase.auth.signInWithPassword({
+  const { data, error } = await supabase!.auth.signInWithPassword({
     email,
     password,
   });
@@ -33,10 +33,10 @@ export async function signInWithEmail(email: string, password: string) {
 }
 
 export async function getCurrentUser() {
-  const { data } = await supabase.auth.getSession();
+  const { data } = await supabase!.auth.getSession();
   return data.session?.user;
 }
 
 export async function signOut() {
-  return await supabase.auth.signOut();
+  return await supabase!.auth.signOut();
 }
