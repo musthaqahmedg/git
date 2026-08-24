@@ -20,8 +20,21 @@ export default function DriverDashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // TODO: Fetch jobs from API
-    setLoading(false);
+    const fetchJobs = async () => {
+      try {
+        const res = await fetch('/api/jobs/list');
+        if (res.ok) {
+          const data = await res.json();
+          setJobs(data.jobs || []);
+        }
+      } catch (err) {
+        console.error('Failed to fetch jobs:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchJobs();
   }, []);
 
   const handleAcceptJob = (jobId: string) => {
