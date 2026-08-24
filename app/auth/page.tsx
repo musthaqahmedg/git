@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
 
@@ -11,6 +11,7 @@ export default function AuthPage() {
   const [loading, setLoading] = useState(false);
   const [isLogin, setIsLogin] = useState(false);
   const searchParams = useSearchParams();
+  const router = useRouter();
   const type = searchParams.get('type');
 
   const handleSignup = async (e: React.FormEvent) => {
@@ -38,8 +39,14 @@ export default function AuthPage() {
         method: 'POST',
         body: JSON.stringify({ email, password, type }),
       });
-      if (res.ok) alert('Login successful!');
-      else alert('Login failed');
+      if (res.ok) {
+        alert('Login successful!');
+        if (type === 'driver') {
+          router.push('/driver/dashboard');
+        } else {
+          router.push('/customer/dashboard');
+        }
+      } else alert('Login failed');
     } catch (err) {
       console.error(err);
     } finally {
