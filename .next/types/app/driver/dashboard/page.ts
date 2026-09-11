@@ -1,8 +1,8 @@
-// File: /workspaces/git/app/driver/page.tsx
-import * as entry from '../../../../app/driver/page.js'
+// File: /workspaces/git/app/driver/dashboard/page.tsx
+import * as entry from '../../../../../app/driver/dashboard/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
-type TEntry = typeof import('../../../../app/driver/page.js')
+type TEntry = typeof import('../../../../../app/driver/dashboard/page.js')
 
 // Check that the entry is a valid entry
 checkFields<Diff<{
