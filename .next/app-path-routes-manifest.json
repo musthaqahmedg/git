@@ -1,1 +1,1 @@
-{"/_not-found/page":"/_not-found","/api/payment/create-order/route":"/api/payment/create-order","/api/auth/login/route":"/api/auth/login","/page":"/","/api/payment/verify/route":"/api/payment/verify","/api/auth/signup/route":"/api/auth/signup","/auth/page":"/auth"}
+{"/_not-found/page":"/_not-found","/api/auth/login/route":"/api/auth/login","/api/auth/signup/route":"/api/auth/signup","/api/payment/create-order/route":"/api/payment/create-order","/api/payment/verify/route":"/api/payment/verify","/page":"/","/driver/page":"/driver","/auth/page":"/auth"}
