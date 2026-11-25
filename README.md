@@ -30,6 +30,19 @@ https://git-two-delta.vercel.app
 🔄 Customer booking flow (in progress)
 🔄 Payment integration (coming soon)
 
+## 📰 Latest Update (25/11/2026)
+
+✅ Resumed the Supabase database after inactivity
+✅ Verified driver login works on production
+✅ Driver dashboard loads all available jobs
+✅ Brand name research: "Get It Done" is already in use, so a unique brand name will be chosen before launch
+
+**Next up:**
+1. Choose a new brand name
+2. Upgrade to the latest free tech stack
+3. Redesign the UI to be clean and mobile-friendly
+4. Add AI-powered development automation
+
 ## 📈 Business Model
 
 - Target: Palakkad, Kerala (Initial Launch)
