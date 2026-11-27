@@ -13,6 +13,9 @@ interface Job {
   pay: number;
   customer_name: string;
   status: string;
+  description?: string | null;
+  bring?: string | null;
+  photos?: string[];
 }
 
 const rupees = (n: number) => `₹${Number(n).toLocaleString('en-IN')}`;
@@ -92,10 +95,32 @@ export default function DriverDashboard() {
             {jobs.map((job) => {
               const done = accepted.has(job.id);
               return (
-                <li key={job.id} className="flex flex-wrap items-center gap-x-4 gap-y-3 py-5">
+                <li key={job.id} className="flex flex-wrap items-start gap-x-4 gap-y-3 py-5">
                   <div className="min-w-0 flex-1">
                     <p className="text-lg font-bold">{job.service_type}</p>
                     <p className="text-muted">{job.location}</p>
+                    {job.description && <p className="mt-2 max-w-prose">{job.description}</p>}
+                    {job.bring && (
+                      <p className="mt-1 text-sm">
+                        <span className="font-semibold">Bring:</span> {job.bring}
+                      </p>
+                    )}
+                    {job.photos && job.photos.length > 0 && (
+                      <div className="mt-3 flex gap-2">
+                        {job.photos.map((src, i) => (
+                          <a
+                            key={src}
+                            href={src}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="block h-20 w-20 overflow-hidden rounded-[var(--radius-control)] border-2 border-line"
+                          >
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src={src} alt={`Photo ${i + 1} of the job`} loading="lazy" className="h-full w-full object-cover" />
+                          </a>
+                        ))}
+                      </div>
+                    )}
                     {rowError[job.id] && (
                       <p role="alert" className="mt-1 text-sm text-danger">
                         {rowError[job.id]}

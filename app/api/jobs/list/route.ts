@@ -6,7 +6,8 @@ export async function GET() {
     const { data, error } = await supabaseServer()
       .from('jobs')
       .select('*')
-      .eq('status', 'available');
+      .eq('status', 'available')
+      .order('created_at', { ascending: false });
 
     if (error) {
       return NextResponse.json(
