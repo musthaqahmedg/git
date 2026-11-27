@@ -1,12 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
 
 export default function CustomerDashboard() {
-  const router = useRouter();
   const [serviceType, setServiceType] = useState('');
   const [location, setLocation] = useState('');
   const [pay, setPay] = useState('');
