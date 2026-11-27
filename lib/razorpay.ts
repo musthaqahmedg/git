@@ -1,14 +1,21 @@
 import Razorpay from 'razorpay';
 import crypto from 'crypto';
 
-const razorpay = new Razorpay({
-  key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID!,
-  key_secret: process.env.RAZORPAY_KEY_SECRET!,
-});
+// Created on first use so builds don't need payment keys.
+let client: Razorpay | null = null;
+function getRazorpay() {
+  if (!client) {
+    client = new Razorpay({
+      key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID!,
+      key_secret: process.env.RAZORPAY_KEY_SECRET!,
+    });
+  }
+  return client;
+}
 
 export async function createOrder(amount: number, jobAcceptanceId: string) {
   try {
-    const order = await razorpay.orders.create({
+    const order = await getRazorpay().orders.create({
       amount: Math.round(amount * 100), // Convert to paise
       currency: 'INR',
       receipt: jobAcceptanceId,
@@ -41,7 +48,7 @@ export async function capturePayment(
   paymentId: string
 ) {
   try {
-    const payment = await razorpay.payments.fetch(paymentId);
+    const payment = await getRazorpay().payments.fetch(paymentId);
     return payment;
   } catch (error) {
     console.error('Razorpay fetch error:', error);
