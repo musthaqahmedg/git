@@ -1,36 +1,44 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
+import Link from 'next/link';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Palakkad Marketplace - Find Jobs, Fix Tasks',
-  description: 'Connect drivers and customers in Palakkad',
+  title: 'NearHand: help from someone nearby',
+  description:
+    'Book drivers, plumbers and electricians near you in Palakkad, or find work close to home.',
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export const viewport: Viewport = {
+  themeColor: '#1e4d2b',
+};
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Anek+Latin:wdth,wght@75..125,400..800&display=swap"
+        />
+      </head>
       <body>
-        <nav style={{
-          background: '#1a1a1a',
-          color: '#fff',
-          padding: '12px 20px',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          borderBottom: '1px solid #333'
-        }}>
-          <a href="/" style={{ fontSize: '18px', fontWeight: 'bold', textDecoration: 'none', color: '#fff' }}>
-            Palakkad Marketplace
-          </a>
-          <div style={{ display: 'flex', gap: '20px' }}>
-            <a href="/auth?type=driver" style={{ color: '#aaa', textDecoration: 'none' }}>Driver Login</a>
-            <a href="/auth?type=customer" style={{ color: '#aaa', textDecoration: 'none' }}>Customer Login</a>
+        <header className="border-b border-line bg-ground">
+          <div className="mx-auto flex h-16 max-w-5xl items-center justify-between px-4">
+            <Link href="/" className="type-board text-2xl text-paddy">
+              NearHand
+            </Link>
+            <nav className="flex items-center gap-1 text-sm font-medium sm:gap-4 sm:text-base">
+              <Link href="/auth?type=customer" className="rounded px-2 py-1 text-muted hover:text-ink">
+                Book help
+              </Link>
+              <Link href="/auth?type=driver" className="rounded px-2 py-1 text-muted hover:text-ink">
+                Find work
+              </Link>
+            </nav>
           </div>
-        </nav>
+        </header>
         {children}
       </body>
     </html>

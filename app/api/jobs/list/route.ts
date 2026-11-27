@@ -1,16 +1,9 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { supabaseServer } from '@/lib/supabase';
 
 export async function GET() {
   try {
-    if (!supabase) {
-      return NextResponse.json(
-        { error: 'Database connection failed' },
-        { status: 500 }
-      );
-    }
-
-    const { data, error } = await supabase
+    const { data, error } = await supabaseServer()
       .from('jobs')
       .select('*')
       .eq('status', 'available');

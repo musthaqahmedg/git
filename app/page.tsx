@@ -1,91 +1,91 @@
-'use client';
+import Link from 'next/link';
+import { buttonStyles } from '@/components/ui/button';
+
+const services = ['Driving', 'Plumbing', 'Electrical', 'Carpentry', 'Cleaning'];
+
+const steps = [
+  {
+    title: 'Post the job',
+    body: 'Say what you need, where, and what you will pay.',
+  },
+  {
+    title: 'A nearby worker accepts',
+    body: 'Workers close to you see the job and take it.',
+  },
+  {
+    title: 'Pay in the app',
+    body: 'Pay once the work is done. No cash haggling.',
+  },
+];
 
 export default function Home() {
   return (
-    <div className="container">
-      <div style={{
-        textAlign: 'center',
-        paddingTop: '60px',
-        paddingBottom: '60px'
-      }}>
-        <h1 style={{
-          fontSize: '48px',
-          fontWeight: 'bold',
-          marginBottom: '20px',
-          color: '#fff'
-        }}>
-          Palakkad Marketplace
-        </h1>
+    <main>
+      <section className="bg-turmeric">
+        <div className="mx-auto max-w-5xl px-4 pb-12 pt-10 sm:pb-16 sm:pt-16">
+          <h1 className="type-board max-w-3xl text-[2.75rem] text-ink sm:text-7xl">
+            Help from someone nearby.
+          </h1>
+          <p className="mt-5 max-w-xl text-lg text-ink/80 sm:text-xl">
+            Drivers, plumbers, electricians and more, from your own part of Palakkad. Post
+            what you need and a local worker takes the job.
+          </p>
 
-        <p style={{
-          fontSize: '20px',
-          color: '#aaa',
-          marginBottom: '40px',
-          maxWidth: '600px',
-          margin: '0 auto 40px'
-        }}>
-          Drivers find jobs. Customers fix tasks. Direct connection. No middleman.
-        </p>
-
-        <div className="grid-2" style={{ maxWidth: '800px', margin: '0 auto' }}>
-          <div className="card">
-            <h2 style={{ fontSize: '24px', marginBottom: '12px', color: '#fff' }}>
-              🚗 For Drivers
-            </h2>
-            <p style={{ color: '#aaa', marginBottom: '20px' }}>
-              Login and see all customer ride requests in Palakkad. Accept jobs, get customer contact, negotiate price.
-            </p>
-            <a href="/auth?type=driver">
-              <button style={{ width: '100%' }}>Find Your Job</button>
-            </a>
+          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+            <Link href="/auth?type=customer" className={buttonStyles({ variant: 'board', size: 'lg' })}>
+              I need help
+            </Link>
+            <Link href="/auth?type=driver" className={buttonStyles({ variant: 'outline', size: 'lg' })}>
+              I want work
+            </Link>
           </div>
 
-          <div className="card">
-            <h2 style={{ fontSize: '24px', marginBottom: '12px', color: '#fff' }}>
-              📍 For Customers
-            </h2>
-            <p style={{ color: '#aaa', marginBottom: '20px' }}>
-              Post your ride request. See drivers who accept. Pay safely via Razorpay. Get connected.
-            </p>
-            <a href="/auth?type=customer">
-              <button style={{ width: '100%' }}>Fix Your Task</button>
-            </a>
-          </div>
+          <ul className="mt-10 flex flex-wrap gap-2" aria-label="Services">
+            {services.map((s) => (
+              <li
+                key={s}
+                className="rounded-[var(--radius-board)] border-2 border-ink/80 px-3 py-1 text-sm font-semibold text-ink"
+              >
+                {s}
+              </li>
+            ))}
+          </ul>
         </div>
+      </section>
 
-        <div style={{
-          marginTop: '60px',
-          paddingTop: '40px',
-          borderTop: '1px solid #333',
-          color: '#aaa'
-        }}>
-          <h3 style={{ color: '#fff', marginBottom: '20px' }}>How it works</h3>
-          <div className="grid-2" style={{ maxWidth: '900px', margin: '0 auto', fontSize: '14px' }}>
-            <div>
-              <p style={{ marginBottom: '8px' }}><strong>For Drivers:</strong></p>
-              <ol style={{ paddingLeft: '20px', lineHeight: '1.8' }}>
-                <li>Sign up with phone or email</li>
-                <li>Add vehicle details (type, number, rate)</li>
-                <li>See all customer requests on map</li>
-                <li>Accept jobs you want</li>
-                <li>Call customer, negotiate, complete ride</li>
-                <li>Get paid (app takes small commission)</li>
-              </ol>
-            </div>
-            <div>
-              <p style={{ marginBottom: '8px' }}><strong>For Customers:</strong></p>
-              <ol style={{ paddingLeft: '20px', lineHeight: '1.8' }}>
-                <li>Sign up with phone or email</li>
-                <li>Post your ride request</li>
-                <li>See drivers who accept</li>
-                <li>Choose and call driver directly</li>
-                <li>Complete ride</li>
-                <li>Pay via secure payment</li>
-              </ol>
-            </div>
+      <section className="mx-auto max-w-5xl px-4 py-14">
+        <h2 className="type-wide text-2xl font-bold text-paddy sm:text-3xl">How booking works</h2>
+        <ol className="mt-8 grid gap-8 sm:grid-cols-3">
+          {steps.map((step, i) => (
+            <li key={step.title} className="border-t-4 border-paddy pt-4">
+              <span className="type-board text-4xl text-turmeric [-webkit-text-stroke:1.5px_var(--color-paddy)]">
+                {i + 1}
+              </span>
+              <h3 className="mt-2 text-lg font-bold">{step.title}</h3>
+              <p className="mt-1 text-muted">{step.body}</p>
+            </li>
+          ))}
+        </ol>
+
+        <div className="mt-14 rounded-[var(--radius-board)] bg-leaf p-6 sm:flex sm:items-center sm:justify-between">
+          <div>
+            <h2 className="text-xl font-bold text-paddy">Looking for work?</h2>
+            <p className="mt-1 max-w-md text-muted">
+              See jobs posted near you and take the ones that suit you.
+            </p>
           </div>
+          <Link
+            href="/auth?type=driver"
+            className={buttonStyles({ variant: 'primary', className: 'mt-4 w-full sm:mt-0 sm:w-auto' })}
+          >
+            See jobs near you
+          </Link>
         </div>
-      </div>
-    </div>
+      </section>
+
+      <footer className="border-t border-line">
+        <div className="mx-auto max-w-5xl px-4 py-6 text-sm text-muted">Made in Palakkad, Kerala.</div>
+      </footer>
+    </main>
   );
 }
